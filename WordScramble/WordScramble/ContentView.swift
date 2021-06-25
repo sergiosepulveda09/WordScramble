@@ -14,8 +14,13 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             VStack {
-                TextField("Type your new word", text: $newWord)
+                TextField("Type your new word", text: $newWord, onCommit: addNewWord)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
+                    
+                    .padding()
                 List(usedWords, id: \.self) {
+                    Image(systemName: "\($0.count).circle")
                     Text($0)
                     
                 }
@@ -24,6 +29,17 @@ struct ContentView: View {
             .navigationBarTitle(rootWord)
         }
         
+    }
+    func addNewWord() {
+        let answer = newWord.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        guard answer.count > 0 else {
+            return
+        }
+        
+        //extra validation to come
+        
+        usedWords.insert(answer, at: 0)
+        newWord = ""
     }
     
 }

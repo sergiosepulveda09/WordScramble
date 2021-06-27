@@ -16,8 +16,7 @@ struct ContentView: View {
             VStack {
                 TextField("Type your new word", text: $newWord, onCommit: addNewWord)
                     .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)
-                    
+                    .autocapitalization(/*@START_MENU_TOKEN@*/.none/*@END_MENU_TOKEN@*/)                    
                     .padding()
                 List(usedWords, id: \.self) {
                     Image(systemName: "\($0.count).circle")
@@ -27,6 +26,7 @@ struct ContentView: View {
                 
             }
             .navigationBarTitle(rootWord)
+            .onAppear(perform: startGame)
         }
         
     }
@@ -40,6 +40,18 @@ struct ContentView: View {
         
         usedWords.insert(answer, at: 0)
         newWord = ""
+    }
+    
+    func startGame() {
+        if let startWordsURL = Bundle.main.url(forResource: "start", withExtension: "txt") {
+            if let startsWords = try? String(contentsOf: startWordsURL) {
+                let allwords = startsWords.components(separatedBy: "\n")
+                rootWord = allwords.randomElement() ?? "silkworm"
+                return
+            }
+        }
+        
+        fatalError("Could not load start.text from bundle.")
     }
     
 }
